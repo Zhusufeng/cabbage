@@ -1,8 +1,10 @@
 const initSqlJs = require("sql.js");
 
-module.exports = initSqlJs().then(SQL => {
+async function initializeDatabase() {
+  const SQL = await initSqlJs();
   const db = new SQL.Database();
   console.log("Database created.");
+
   /**
    * I am using SQLite for an in-memory database,
    * and it has only a few datatypes.
@@ -26,5 +28,8 @@ module.exports = initSqlJs().then(SQL => {
   `;
   db.run(query);
   console.log("transactions table created.");
+
   return db;
-});
+}
+
+module.exports = initializeDatabase;
