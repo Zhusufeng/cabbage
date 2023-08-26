@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const port = 8080;
 const initSqlJs = require("sql.js");
+const multer = require("multer");
+const upload = multer();
 
 async function main() {
   // Middleware
@@ -61,6 +63,26 @@ async function main() {
     `;
     db.run(sqlstr);
     res.status(201).send();
+  });
+
+  // function createInsertStmt(transaction) {}
+
+  app.post("/transactions/bulk", upload.single("csvFile"), (req, res) => {
+    console.log("req.body.source", req.body.source);
+    const csv = req.file.buffer.toString("utf8");
+    const parsed = csv.split("\n");
+    const [firstRow, ...rows] = parsed;
+    const headers = firstRow.split(",");
+
+    const transactions = rows.map(row => {
+      const cells = row.split(",");
+      const rowObj = headers.reduce((acc, header, idx) => {
+        return { ...acc, [header]: cells[idx] };
+      }, {});
+      return rowObj;
+    });
+
+    res.status(201).send(transactions);
   });
 
   app.listen(port, () => {
