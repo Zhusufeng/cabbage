@@ -35,6 +35,14 @@ async function main() {
     res.send("Hello World!");
   });
 
+  app.get("/transactions", (req, res) => {
+    const { query } = req;
+    const stmt = db.prepare("SELECT * FROM transactions WHERE id=:idVal");
+    const result = stmt.getAsObject({ ":idVal": query.id });
+    stmt.free();
+    res.status(200).send(result);
+  });
+
   app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
   });
