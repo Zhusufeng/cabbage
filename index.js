@@ -4,6 +4,10 @@ const port = 8080;
 const initSqlJs = require("sql.js");
 
 async function main() {
+  // Middleware
+  app.use(express.json());
+
+  // Database
   const SQL = await initSqlJs();
   const db = new SQL.Database();
   console.log("Database created.");
@@ -41,6 +45,22 @@ async function main() {
     const result = stmt.getAsObject({ ":idVal": query.id });
     stmt.free();
     res.status(200).send(result);
+  });
+
+  app.post("/transactions", (req, res) => {
+    const { body } = req;
+    const { id, basketSize, budtenderId, locationId, timestamp } = body;
+    const sqlstr = `
+      INSERT INTO transactions VALUES (
+        "${id}",
+        "${budtenderId}",
+        "${locationId}",
+        ${basketSize},
+        "${timestamp}"
+      )
+    `;
+    db.run(sqlstr);
+    res.status(201).send();
   });
 
   app.listen(port, () => {
