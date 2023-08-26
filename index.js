@@ -1,9 +1,15 @@
 const express = require("express");
+const multer = require("multer");
+const initSqlJs = require("sql.js");
+const {
+  transformCSVToTransactionArray,
+  createInsertStatement,
+} = require("./helpers");
+
+const upload = multer();
+
 const app = express();
 const port = 8080;
-const initSqlJs = require("sql.js");
-const multer = require("multer");
-const upload = multer();
 
 async function main() {
   // Middleware
@@ -18,7 +24,7 @@ async function main() {
    * and it has only a few datatypes.
    * https://www.sqlite.org/datatype3.html
    */
-  let sqlstr = `
+  let query = `
     CREATE TABLE transactions (
       id TEXT,
       budtender_id TEXT,
@@ -34,7 +40,7 @@ async function main() {
       "2023-08-09T22:44:00.000+00:00"
     );
   `;
-  db.run(sqlstr);
+  db.run(query);
   console.log("transactions table created.");
 
   app.get("/", (req, res) => {
@@ -51,51 +57,10 @@ async function main() {
 
   app.post("/transactions", (req, res) => {
     const { body } = req;
-    const { id, basketSize, budtenderId, locationId, timestamp } = body;
-    const sqlstr = `
-      INSERT INTO transactions VALUES (
-        "${id}",
-        "${budtenderId}",
-        "${locationId}",
-        ${basketSize},
-        "${timestamp}"
-      )
-    `;
-    db.run(sqlstr);
+    const query = createInsertStatement(body);
+    db.run(query);
     res.status(201).send();
   });
-
-  function transformCSVToTransactionArray(csvString) {
-    const parsed = csvString.split("\n");
-    const [firstRow, ...rows] = parsed;
-    const headers = firstRow.split(",");
-    const transactions = rows
-      .filter(row => row.length)
-      .map(row => {
-        const cells = row.split(",");
-        const rowObj = headers.reduce((acc, header, idx) => {
-          return cells.length ? { ...acc, [header]: cells[idx] } : acc;
-        }, {});
-        return rowObj;
-      });
-    return transactions;
-  }
-
-  function createInsertStatement(transaction) {
-    const { id, budtenderId, locationId, basketSize, timestamp } = transaction;
-    const insertStmt = `
-      INSERT INTO transactions VALUES (
-        "${id}",
-        "${budtenderId}",
-        "${locationId}",
-        ${basketSize},
-        "${timestamp}"
-      )
-    `;
-    return insertStmt;
-  }
-
-  // function runInserts() {}
 
   // worker thread?
 
