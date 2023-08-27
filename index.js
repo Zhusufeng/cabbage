@@ -31,19 +31,21 @@ async function main() {
     const { body } = req;
     const query = createInsertStatement(body);
     db.run(query);
-    res.status(201).send();
+    res.status(201).send(body);
   });
 
   app.post("/transactions/bulk", upload.single("csvFile"), async (req, res) => {
     const { source } = req.body;
     const csv = req.file.buffer.toString("utf8");
     const transactions = transformCSVToTransactionArray(csv, source);
-    transactions.forEach(transaction => {
+    const transactionIds = transactions.map(transaction => {
+      const { id } = transaction._transaction;
       const query = createInsertStatement(transaction._transaction);
       db.run(query);
+      return id;
     });
 
-    res.status(201).send();
+    res.status(201).send(transactionIds);
   });
 
   app.listen(port, () => {
