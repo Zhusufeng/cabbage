@@ -1,5 +1,6 @@
 const GoodPOSTransaction = require("./sources/GoodPOS");
 const OkPOSTransaction = require("./sources/OkPOS");
+const WonkyPOSTransaction = require("./sources/WonkyPOS");
 
 function createTransaction(source) {
   let transaction;
@@ -10,8 +11,9 @@ function createTransaction(source) {
     case "ok_pos":
       transaction = new OkPOSTransaction();
       break;
-    // case "wonky_pos":
-    //   break;
+    case "wonky_pos":
+      transaction = new WonkyPOSTransaction();
+      break;
   }
   return transaction;
 }
