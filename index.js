@@ -34,7 +34,6 @@ async function main() {
     res.status(201).send();
   });
 
-  // worker thread?
   app.post("/transactions/bulk", upload.single("csvFile"), async (req, res) => {
     const { source } = req.body;
     const csv = req.file.buffer.toString("utf8");
