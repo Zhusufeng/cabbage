@@ -23,7 +23,14 @@ You can now access it at http://localhost:8080
 
 #### GET /transactions
 
-Request URL: http://localhost:8080/transactions?id=<TRANSACTION_ID>
+It requires the query parameter `id`, which should be a transaction id.
+
+Request:
+
+```bash
+curl --location 'http://localhost:8080/transactions?id=abcd-efgh-ijkl-mnop'
+```
+
 Response:
 
 ```javascript
@@ -38,17 +45,18 @@ Response:
 
 #### POST /transactions
 
-Request URL: http://localhost:8080/transactions
-Request Body:
+Request:
 
-```javascript
-{
+```bash
+curl --location 'http://localhost:8080/transactions' \
+--header 'Content-Type: application/json' \
+--data '{
   "id": "abcd-efgh-ijkl-mnop",
-  "budtender_id": "abcd-efgh-ijkl-mnop",
-  "location_id": "abcd-efgh-ijkl-mnop",
-  "basket_size": 54.99,
-  "timestamp_": "2023-08-26T22:44:00.000+00:00"
-}
+  "basketSize": 54.99,
+  "budtenderId": "abcd-efgh-ijkl-mnop",
+  "locationId": "abcd-efgh-ijkl-mnop",
+  "timestamp": "2023-08-26T22:44:00.000+00:00"
+}'
 ```
 
 Response:
@@ -67,13 +75,18 @@ Note: POST /transactions returns the body, better if it returned data inserted i
 
 #### POST /transactions/bulk
 
-Request URL: http://localhost:8080/transactions
-Request Body:
+The request body takes in a `source`. The valid `source`s are:
 
-```javascript
-{
-  "source": "good_pos", // or "ok_pos" or "wonky_pos"
-}
+- "good_pos"
+- "ok_pos"
+- "wonky_pos"
+
+Request:
+
+```bash
+curl --location 'http://localhost:8080/transactions/bulk' \
+--form 'csvFile=@"/wonky_pos.csv"' \
+--form 'source="wonky_pos"'
 ```
 
 Response:
