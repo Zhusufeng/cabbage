@@ -1,56 +1,38 @@
 const express = require("express");
 const multer = require("multer");
-const createDatabase = require("./db");
+const { initializeDatabase } = require("./db");
 const {
-  transformCSVToTransactionArray,
-  createInsertStatement,
-} = require("./helpers");
+  getTransaction,
+  createTransaction,
+  createBulkTransactions,
+} = require("./transaction");
 
 const upload = multer();
 const app = express();
 const port = 8080;
 
-async function main() {
+async function startServer() {
   app.use(express.json());
 
-  const db = await createDatabase();
+  await initializeDatabase();
 
   app.get("/", (req, res) => {
     res.send("Hello World!");
   });
 
-  app.get("/transactions", (req, res) => {
-    const { query } = req;
-    const stmt = db.prepare("SELECT * FROM transactions WHERE id=:idVal");
-    const result = stmt.getAsObject({ ":idVal": query.id });
-    stmt.free();
-    res.status(200).send(result);
-  });
+  app.get("/transactions", getTransaction);
 
-  app.post("/transactions", (req, res) => {
-    const { body } = req;
-    const query = createInsertStatement(body);
-    db.run(query);
-    res.status(201).send(body);
-  });
+  app.post("/transactions", createTransaction);
 
-  app.post("/transactions/bulk", upload.single("csvFile"), async (req, res) => {
-    const { source } = req.body;
-    const csv = req.file.buffer.toString("utf8");
-    const transactions = transformCSVToTransactionArray(csv, source);
-    const transactionIds = transactions.map(transaction => {
-      const { id } = transaction._transaction;
-      const query = createInsertStatement(transaction._transaction);
-      db.run(query);
-      return id;
-    });
-
-    res.status(201).send(transactionIds);
-  });
+  app.post(
+    "/transactions/bulk",
+    upload.single("csvFile"),
+    createBulkTransactions
+  );
 
   app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
   });
 }
 
-main();
+startServer();
