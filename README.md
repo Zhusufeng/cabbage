@@ -1,4 +1,4 @@
-# Happy Cabbage
+# Cabbage
 
 ### Requirements
 
@@ -8,7 +8,7 @@
 
 ```bash
 # Clone it
-git clone <ADDRESS>
+git clone https://github.com/Zhusufeng/cabbage.git
 
 # Install node packages
 npm i
