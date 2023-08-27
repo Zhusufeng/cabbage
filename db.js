@@ -1,8 +1,10 @@
 const initSqlJs = require("sql.js");
 
+let db = null;
+
 async function initializeDatabase() {
   const SQL = await initSqlJs();
-  const db = new SQL.Database();
+  const database = new SQL.Database();
   console.log("Database created.");
 
   /**
@@ -26,10 +28,17 @@ async function initializeDatabase() {
       "2023-08-09T22:44:00.000+00:00"
     );
   `;
-  db.run(query);
+  database.run(query);
   console.log("transactions table created.");
 
+  db = database;
+}
+
+function getDatabase() {
   return db;
 }
 
-module.exports = initializeDatabase;
+module.exports = {
+  initializeDatabase,
+  getDatabase,
+};
