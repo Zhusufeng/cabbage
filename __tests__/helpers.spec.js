@@ -1,8 +1,18 @@
+const GoodPOSTransaction = require("../sources/GoodPOS");
 const {
   createTransaction,
   transformCSVToTransactionArray,
   createInsertStatement,
 } = require("../helpers");
+
+describe("createTransaction", () => {
+  test("should create a new transaction instance given a source", () => {
+    const source = "good_pos";
+    const actual = createTransaction(source);
+    const expected = new GoodPOSTransaction();
+    expect(actual).toEqual(expected);
+  });
+});
 
 describe("createInsertStatement", () => {
   test("should create an insert statement", () => {
