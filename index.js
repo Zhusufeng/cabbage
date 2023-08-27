@@ -36,11 +36,11 @@ async function main() {
 
   // worker thread?
   app.post("/transactions/bulk", upload.single("csvFile"), async (req, res) => {
-    console.log("req.body.source", req.body.source);
+    const { source } = req.body;
     const csv = req.file.buffer.toString("utf8");
-    const transactions = transformCSVToTransactionArray(csv);
-    transactions.forEach((transaction, i) => {
-      const query = createInsertStatement(transaction);
+    const transactions = transformCSVToTransactionArray(csv, source);
+    transactions.forEach(transaction => {
+      const query = createInsertStatement(transaction._transaction);
       db.run(query);
     });
 
