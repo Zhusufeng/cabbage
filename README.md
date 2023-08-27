@@ -108,9 +108,12 @@ Response:
 ### Additional Questions & My Answers
 
 1. Imagine one of these data sources started providing us individual transactions in JSON via a webhook. How would you refactor your code to handle this with minimal duplication?
-   To consume from the webhook, I could reuse the code or the function `createTransaction` in `transaction.js`.
+
+   - To consume from the webhook, I could reuse the code or the function `createTransaction` in `transaction.js`.
+
 2. How easy would it be for us to add a fourth or fifth data source? How would you refactor your code to make it easier to handle new data sources?
-   I would create another class and add the file to the `/sources` directory. Then I would add the instantiation to the `createTransaction` function in `helpers.js`.
+
+   - I would create another class and add the file to the `/sources` directory. Then I would add the instantiation to the `createTransaction` function in `helpers.js`.
 
 ### Improvements
 

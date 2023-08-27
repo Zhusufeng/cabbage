@@ -1,5 +1,5 @@
 {
-  "name": "happy-cabbage",
+  "name": "cabbage",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "dev": "node index.js",
     "test": "jest"
   },
-  "author": "",
+  "author": "Lisa Gee",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
