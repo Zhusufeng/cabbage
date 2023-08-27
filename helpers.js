@@ -33,18 +33,19 @@ function transformCSVToTransactionArray(csvString, source) {
 function createInsertStatement(transaction) {
   const { id, budtenderId, locationId, basketSize, timestamp } = transaction;
   const insertStmt = `
-      INSERT INTO transactions VALUES (
-        "${id}",
-        "${budtenderId}",
-        "${locationId}",
-        ${basketSize},
-        "${timestamp}"
-      )
-    `;
+    INSERT INTO transactions VALUES (
+      "${id}",
+      "${budtenderId}",
+      "${locationId}",
+      ${basketSize},
+      "${timestamp}"
+    )
+  `;
   return insertStmt;
 }
 
 module.exports = {
+  createTransaction,
   transformCSVToTransactionArray,
   createInsertStatement,
 };
