@@ -15,7 +15,7 @@ jest.mock("../db", () => {
   };
 });
 
-describe("postTransaction", () => {
+describe("createTransaction", () => {
   it("should add a transaction to the database", () => {
     const req = httpMocks.createRequest({
       method: "POST",
